@@ -1,0 +1,44 @@
+<div class="topbar">
+    <div class="buttons"><span class="button" data-action="newExercice"><img src="assets/images/plus2.svg" /></span>
+    </div>
+    <div class="path"></div>
+    <div class="searchIndicator">Tag search results ></div>
+</div>
+<div class="tagsContainer">
+    <div class="DB_tags_container"></div>
+</div>
+<div class="buttonsContainer">
+    <div class="button" data-action="addNewTag"><img src="assets/images/plus.svg" /></div>
+    <div class="button" data-action="updateIndexedFolders"><img src="assets/images/loading.svg" /></div>
+    <div class="button" data-action="parameters"><img src="assets/images/cogwheel.svg" /></div>
+</div>
+<div class="resultsContainer"></div>
+<div class="tagsSearchContainer"><img class="clearSearch" src="assets/images/cross.svg" /><img class="btSearch"
+        src="assets/images/search.svg" /></div>
+
+<div id="exercice-container">
+
+    <div class="exerciceTopbar"><img src="assets/images/left-arrow.svg" class="button" data-action="close"
+            draggable="false" />
+        <div class="left" contenteditable="true" data-source="label"></div>
+        <div class="right"></div>
+    </div>
+    <div class="tabsSelector">
+        <span class="tab selected" data-target="view"><img src="assets/images/note.svg" draggable="false" /></span>
+        <span class="tab" data-target="resources"><img src="assets/images/resources.svg" draggable="false" /></span>
+        <span class="tab" data-target="timers"><img src="assets/images/timer.svg" draggable="false" /></span>
+    </div>
+    <div class="tabContent view displayed">
+        <div class="tinymce-toolbar-container"></div>
+        <div class="description" contenteditable="true" data-source="description"></div>
+        <div class="infos">Lien vers un fichier vidéo : ["file_path" 00:00:00]</div>
+    </div>
+    <div class="tabContent resources">
+        <div class="filesContainer"></div>
+    </div>
+    <div class="tabContent timers">
+        <div class="timersContainer"></div>
+        <img class="button" data-action="add_new_timer" src="assets/images/plus2.svg" />
+    </div>
+
+</div>

@@ -1,0 +1,204 @@
+#video_player {
+    display: none;
+    position: absolute;
+    z-index: 20000000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    overflow: hidden;
+
+    .topbar {
+
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+
+        padding: 12px 15px 0 50px;
+
+        display: grid;
+        grid-template-columns: 1fr min-content min-content min-content min-content;
+        grid-template-rows: min-content;
+        column-gap: 25px;
+        align-items: center;
+        transition-property: transform, opacity;
+        transition-duration: .60s;
+
+        box-shadow: rgba(0, 0, 0, 0.99) 0px 110px 60px -50px inset;
+
+        opacity: 0;
+        transform: translate(0, -80px);
+
+        .video_title {
+            font-size: 28px;
+            color: white;
+        }
+
+        .button_add_postit {
+            cursor: pointer;
+            width: 45px;
+        }
+
+        .button_minimize {
+            cursor: pointer;
+            width: 45px;
+        }
+
+        .button_pip {
+            cursor: pointer;
+            width: 45px;
+        }
+
+        .button_close {
+            cursor: pointer;
+            width: 45px;
+        }
+    }
+
+    .html5Player {
+        z-index: 1;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+
+        width: auto;
+        height: auto;
+
+        min-width: 100%;
+        min-height: 100%;
+
+        max-width: 100%;
+        max-height: 100%;
+
+        z-index: -100;
+        background-size: cover;
+        overflow: hidden;
+
+        background: #000;
+    }
+
+    .youtubeEmbededPlayer {
+        /* display: none; */
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        /* pointer-events: none; */
+    }
+
+    .html5Player,
+    .youtubeEmbededPlayer {
+        &.hidden {
+            display: none;
+        }
+    }
+
+    &.displayed {
+        display: grid;
+    }
+
+    &.pipMode,
+    &.minimized {
+        display: none;
+    }
+
+    &.interfaceIsDisplayed {
+        .topbar {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        .bottombar {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+    }
+}
+
+#VideoPlayer_Standalone {
+    display: none;
+    z-index: 100001;
+    position: absolute;
+    bottom: 70px;
+    right: 29px;
+    width: 55px;
+    height: 60px;
+    overflow: visible;
+
+    justify-content: end;
+
+    .button_main {
+        z-index: 2;
+        width: 55px;
+        cursor: pointer;
+
+        filter: grayscale(90%);
+    }
+
+    .button {
+        z-index: 1;
+        cursor: pointer;
+        position: absolute;
+        bottom: 12px;
+        right: 10px;
+        width: 40px;
+        opacity: 0;
+        background: #e53935;
+        border-radius: 50%;
+
+        transition-property: transform, opacity;
+        transition-duration: 0.4s;
+        transition-timing-function: ease-out;
+
+        &.add_postit {
+            padding: 5px;
+        }
+
+        &:hover {
+            background: #b11411;
+        }
+    }
+
+    &:hover {
+        width: 158px;
+
+        .button {
+            &.play_pause {
+                opacity: 1;
+                transform: translate(-50px, 0);
+            }
+
+            &.add_postit {
+                opacity: 1;
+                transform: translate(-100px, 0);
+            }
+
+            &.close {
+                opacity: 1;
+                transform: translate(-150px, 0);
+            }
+
+        }
+    }
+
+    &.displayed {
+        display: flex;
+    }
+
+    &.playing {
+
+        .button_main {
+            filter: none;
+        }
+    }
+}

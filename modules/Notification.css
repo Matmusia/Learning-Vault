@@ -1,0 +1,108 @@
+.Notification {
+    z-index: 999999999;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+
+    .notification {
+        pointer-events: all;
+
+        min-width: 380px;
+
+        margin: 15px;
+        padding: 20px 15px 20px 30px;
+
+        background: #1a1b1d;
+        border-radius: 5px;
+
+        border-top: 5px solid #46b2ff;
+
+        font-size: 14px;
+        letter-spacing: 1px;
+
+        transition-property: transform opacity;
+        transition-duration: 400ms;
+        transition-timing-function: ease-out;
+
+        transform: translate(0, 100%);
+        opacity: 0;
+
+        display: grid;
+        grid-template-columns: 1fr min-content min-content min-content;
+        align-items: center;
+        column-gap: 10px;
+
+        overflow-y: auto;
+        max-height: 95%;
+
+        .content {
+            line-height: 20px;
+
+            & span {
+                color: grey;
+            }
+
+            & img {
+                width: 25px;
+                vertical-align: middle;
+            }
+        }
+
+        .button {
+            display: inline-block;
+            color: #8fb8ff;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 5px;
+            white-space: nowrap;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .button_close {
+            grid-column: 4;
+            width: 35px;
+            line-height: 35px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            align-self: flex-start;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+
+    &.displayed {
+        .notification {
+            transform: translate(0, 0);
+            opacity: 1;
+        }
+    }
+
+    &.confirmation {
+        .notification {
+            border-top: 5px solid #40ad14;
+        }
+    }
+
+    &.alert {
+        .notification {
+            border-top: 5px solid #ff8d4c;
+        }
+    }
+
+    &.warning {
+        .notification {
+            border-top: 5px solid #e6322c;
+        }
+    }
+}

@@ -1,0 +1,6 @@
+[submodule "external/medium-editor"]
+	path = external/medium-editor
+	url = https://github.com/Matmusia/medium-editor.git
+[submodule "external/medium-editor-autolist"]
+	path = external/medium-editor-autolist
+	url = https://github.com/varun-raj/medium-editor-autolist.git

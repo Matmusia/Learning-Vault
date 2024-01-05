@@ -1,0 +1,41 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Learning Vault</title>
+
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="external/medium-editor/dist/css/medium-editor.css"> <!-- Core -->
+  <link rel="stylesheet" href="external/medium-editor/dist/css/themes/matmusia.css"> <!-- or any other theme -->
+  <link rel="stylesheet" href="LV.css?v=1.0">
+
+</head>
+
+<body>
+  <div id="sectionSelector">
+    <div class="tab overview selected"><img src="assets/images/overview.svg" /></div>
+    <div class="tab learning"><img src="assets/images/learning.svg" /></div>
+    <div class="tab exercices"><img src="assets/images/exos.svg" /></div>
+    <div class="tab notes"><img src="assets/images/notes.svg" /></div>
+  </div>
+
+  <div id="tagEditor"><span class="middleCentrer"></span>
+    <div class="window">
+      <label class="bgColor"><input type="checkbox" /> <span>Background color :</span> <input type="color" /></label>
+      <label class="txtColor"><input type="checkbox" /> <span>Text color :</span> <input type="color" /></label>
+      <input type="button" value="Save" /><input type="button" value="Cancel" />
+    </div>
+  </div>
+
+  <div id="loading"><img src="assets/images/loading.svg" /></div>
+
+  <script src="external/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>

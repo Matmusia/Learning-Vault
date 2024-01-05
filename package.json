@@ -1,0 +1,9 @@
+{
+	"name": "learningvault",
+	"version": "1.0.0",
+	"main": "index.html",
+	"window": {
+		"id": "learning_vault_default_window",
+		"icon": "assets/icon.png"
+	}
+}
