@@ -147,7 +147,7 @@ module.exports = class Section {
                     let newTag = new Tag({ 'id': i, 'label': "New tag" }).toElement();
                     this.getChildElem(".tagGroupContainer").appendChild(newTag);
 
-                    RENAME(newTag, false, () => { Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer')); return true; });
+                    RENAME(newTag, false, async () => { Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer')); });
                 }
             };
 
@@ -164,12 +164,10 @@ module.exports = class Section {
 
                     Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
 
-                    RENAME(groupTitleElem.querySelector(".label"), false, (oldName, newName) => {
+                    RENAME(groupTitleElem.querySelector(".label"), false, async (oldName, newName) => {
                         groupTitleElem.nextElementSibling.dataset.label = newName;
 
                         Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
-
-                        return true;
                     });
                 }
             };
@@ -185,7 +183,7 @@ module.exports = class Section {
                         label: "Renommer le tag",
                         icon: "rename.svg",
                         action: item => {
-                            RENAME(tagElem, false, (oldName, newName) => {
+                            RENAME(tagElem, false, async (oldName, newName) => {
                                 tagElem.datas.label = newName;
 
                                 Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
@@ -198,8 +196,6 @@ module.exports = class Section {
                                         }
                                     }
                                 });
-
-                                return true;
                             });
                         }
                     },
@@ -255,12 +251,10 @@ module.exports = class Section {
                         label: "Renommer le groupe",
                         icon: "rename.svg",
                         action: item => {
-                            RENAME(tagTitle.querySelector(".label"), false, (oldName, newName) => {
+                            RENAME(tagTitle.querySelector(".label"), false, async (oldName, newName) => {
                                 tagTitle.nextElementSibling.dataset.label = newName;
 
                                 Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
-
-                                return true;
                             });
                         }
                     },
@@ -303,7 +297,7 @@ module.exports = class Section {
                 let newTag = new Tag({ 'id': i, 'label': "New tag" }).toElement();
                 this.getChildElem(".tagGroupContainer").appendChild(newTag);
 
-                RENAME(newTag, false, () => { Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer')); return true; });
+                RENAME(newTag, false, async () => { Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer')); });
             }
             else if (buttonElement.dataset.action === "parameters") {
                 Parameters.open('learning');

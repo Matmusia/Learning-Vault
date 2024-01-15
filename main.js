@@ -54,6 +54,12 @@ var contextHasChanged = function (newContext, context_is_file) {
     contextChangeCallbacks.forEach(callback => { callback(); });
 }
 
+var ESCAPE_HTML = function (html) {
+    let escape = document.createElement('div');
+    escape.innerHTML = html;
+    return escape.innerText;
+}
+
 var RENAME = function (target, selectBeforeLastDot, onRenamed) {
     let oldName = target.innerHTML;
 
@@ -72,67 +78,69 @@ var RENAME = function (target, selectBeforeLastDot, onRenamed) {
     range.setEnd(target.firstChild, randeEndIdx);
     selection.addRange(range);
 
-    var endEdit = function (isCanceled) {
+    let exec_callback = async () => {
 
-        if (!isCanceled && onRenamed && target.innerHTML !== oldName) {
-            let renameIsOk = onRenamed(oldName, target.innerHTML);
+        if (onRenamed && target.innerHTML !== oldName) {
 
-            if (renameIsOk !== true) {
-                if (typeof renameIsOk === 'string') alert(renameIsOk);
-                else console.error("renameIsOk is nor TRUE nor String");
+            onRenamed(oldName, target.innerHTML)
 
-                target.innerHTML = oldName;
+                .then(() => {
+                    target.innerHTML = target.innerText;
 
-                target.focus();
+                    end_rename_mod();
+                })
 
-                selection.removeAllRanges();
-                range.setStart(target.firstChild, 0);
-                range.setEnd(target.firstChild, randeEndIdx);
-                selection.addRange(range);
+                .catch(error => {
+                    alert(error);
+                    console.error(error);
 
-                return;
-            }
+                    target.innerHTML = oldName;
 
-            target.innerHTML = target.innerText;
+                    target.focus();
+
+                    selection.removeAllRanges();
+                    range.setStart(target.firstChild, 0);
+                    range.setEnd(target.firstChild, randeEndIdx);
+                    selection.addRange(range);
+                });
         }
-        else if (isCanceled) target.innerHTML = oldName;
+        else end_rename_mod();
+    }
 
-        // End rename mode
-        document.body.removeEventListener("click", onStopingEvent, true);
-        document.body.removeEventListener("contextmenu", onStopingEvent, true);
-        document.body.removeEventListener("keydown", onStopingEvent, true);
+    let end_rename_mod = () => {
+        document.body.removeEventListener("click", on_stoping_event, true);
+        document.body.removeEventListener("contextmenu", on_stoping_event, true);
+        document.body.removeEventListener("keydown", on_stoping_event, true);
 
         target.removeAttribute("contenteditable");
 
         range.collapse();
     }
 
-    let onStopingEvent = function (event) {
+    let on_stoping_event = function (event) {
 
         if (event.type === 'keydown') {
             event.stopImmediatePropagation();
 
             if (event.key === 'Enter') {
                 event.preventDefault();
-                endEdit();
+                exec_callback();
             }
-            else if (event.key === 'Escape') {
-                endEdit(true);
-            }
+            else if (event.key === 'Escape') { target.innerHTML = oldName; end_rename_mod(); }
         }
         else if (event.type !== 'keydown') {
             event.stopImmediatePropagation();
 
             if (event.target != target) {
                 event.preventDefault();
-                endEdit();
+                exec_callback();
             }
         }
     }
 
-    document.body.addEventListener("click", onStopingEvent, true);
-    document.body.addEventListener("contextmenu", onStopingEvent, true);
-    document.body.addEventListener("keydown", onStopingEvent, true);
+    document.body.addEventListener("click", on_stoping_event, true);
+    document.body.addEventListener("contextmenu", on_stoping_event, true);
+    document.body.addEventListener("keydown", on_stoping_event, true);
 }
 
 // Show dev tools window
@@ -242,8 +250,8 @@ var notesSection = new NotesSection("Notes", "datas/tags.notes.json");
 document.body.appendChild(notesSection.toElement());
 
 // Default section
-overviewSection.display();
-// learningSection.display();
+// overviewSection.display();
+learningSection.display();
 // notesSection.display();
 
 postitSection.display(); // TMP

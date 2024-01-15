@@ -82,7 +82,7 @@ module.exports = class NotesSection extends Section {
 
                         let folderPath = path.join(this._root_path, getUniqueFolderName(this._root_path))
 
-                        fs.mkdir(path.join(ROOT_FOLDER, folderPath), function (err) {
+                        fs.mkdir(path.join(ROOT_FOLDER, folderPath), (err) => {
                             if (err) console.error(err);
 
                             // Creation du dossier réussie
@@ -317,22 +317,21 @@ module.exports = class NotesSection extends Section {
                         label: "Renommer...",
                         icon: "rename.svg",
                         action: item => {
-                            RENAME(target.querySelector('p'), true, (oldName, newName) => {
+                            RENAME(target.querySelector('p'), true, async (oldName, newName) => {
+
+                                newName = ESCAPE_HTML(newName);
+
+                                if (new RegExp("\\?|<|>|\\*|:|/|\\\\|\"|\\|", "i").test(newName)) throw new Error("Le nom [" + newName + "] contient des caractères non compatibles.");
 
                                 // Check if a file with the same name already exist
-                                if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(target.path), newName))) return "Un ficher [" + newName + "] existe déjà.";
+                                if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(target.path), newName))) throw new Error("Un ficher [" + newName + "] existe déjà.");
 
                                 // Rename File
-                                fs.rename(path.join(ROOT_FOLDER, target.path), path.join(ROOT_FOLDER, path.dirname(target.path), newName), error => {
-                                    if (error) {
-                                        console.log(error);
-                                        alert("Erreur lors du changement de nom du fichier :\r" + path.join(ROOT_FOLDER, target.path));
-                                        target.querySelector('p').innerText = oldName;
-                                    }
-                                    else target.path = path.join(path.dirname(target.path), newName);
-                                });
+                                await fsp.rename(path.join(ROOT_FOLDER, target.path), path.join(ROOT_FOLDER, path.dirname(target.path), newName))
 
-                                return true;
+                                    .then(() => { target.path = path.join(path.dirname(target.path), newName); })
+
+                                    .catch(error => { throw new Error(error); });
                             });
                         }
                     },

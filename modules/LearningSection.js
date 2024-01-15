@@ -156,43 +156,43 @@ module.exports = class LearningSection extends Section {
 
                                         resultElem.scrollIntoView();
 
-                                        RENAME(resultElem.querySelector(".label"), true, (oldName, newName) => {
+                                        RENAME(resultElem.querySelector(".label"), true, async (oldName, newName) => {
+
+                                            newName = ESCAPE_HTML(newName);
+
+                                            if (new RegExp("\\?|<|>|\\*|:|/|\\\\|\"|\\|", "i").test(newName)) throw new Error("Le nom [" + newName + "] contient des caractères non compatibles.");
 
                                             // Check if a file with the same name already exist
-                                            if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) return "Un ficher [" + newName + "] existe déjà.";
+                                            if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) throw new Error("Un ficher [" + newName + "] existe déjà.");
 
                                             // Rename file
-                                            fs.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName), error => {
-                                                if (error) {
-                                                    console.log(error);
-                                                    return "Erreur lors du changement de nom du fichier :\r" + path.join(ROOT_FOLDER, resultElem.obj.path);
-                                                }
-                                                else {
+                                            await fsp.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))
+
+                                                .then(() => {
                                                     resultElem.obj.label = newName;
                                                     resultElem.title = path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName);
                                                     resultElem.obj.path = path.join(path.dirname(resultElem.obj.path), newName);
-                                                }
-                                            });
 
-                                            // Position the new renamed folder in the correct alphabetic order
-                                            let isTheLast = true;
-                                            for (const comparedElem of this._rootElement.querySelectorAll(".result.dir")) {
-                                                if (comparedElem.querySelector(".label").innerText.localeCompare(newName) > 0) {
-                                                    this.getChildElem(".resultsContainer").insertBefore(resultElem, comparedElem);
-                                                    isTheLast = false;
-                                                    break;
-                                                }
-                                            }
+                                                    // Position the new renamed folder in the correct alphabetic order
+                                                    let isTheLast = true;
+                                                    for (const comparedElem of this._rootElement.querySelectorAll(".result.dir")) {
+                                                        if (comparedElem.querySelector(".label").innerText.localeCompare(newName) > 0) {
+                                                            this.getChildElem(".resultsContainer").insertBefore(resultElem, comparedElem);
+                                                            isTheLast = false;
+                                                            break;
+                                                        }
+                                                    }
 
-                                            if (isTheLast) {
-                                                let firstFile = this.getChildElem(".result.file");
-                                                if (firstFile) this.getChildElem(".resultsContainer").insertBefore(resultElem, firstFile);
-                                                else this.getChildElem(".resultsContainer").appendChild(resultElem);
-                                            }
+                                                    if (isTheLast) {
+                                                        let firstFile = this.getChildElem(".result.file");
+                                                        if (firstFile) this.getChildElem(".resultsContainer").insertBefore(resultElem, firstFile);
+                                                        else this.getChildElem(".resultsContainer").appendChild(resultElem);
+                                                    }
 
-                                            resultElem.scrollIntoView();
+                                                    resultElem.scrollIntoView();
+                                                })
 
-                                            return true;
+                                                .catch(error => { throw new Error(error); });
                                         });
                                     }
                                 }
@@ -222,20 +222,21 @@ module.exports = class LearningSection extends Section {
 
                             if (this._rootElement.classList.contains("searchResultsAreDisplayed")) selector = ".label .resultName";
 
-                            RENAME(target.querySelector(selector), true, (oldName, newName) => {
+                            RENAME(target.querySelector(selector), true, async (oldName, newName) => {
+
+                                newName = ESCAPE_HTML(newName);
+
+                                if (new RegExp("\\?|<|>|\\*|:|/|\\\\|\"|\\|", "i").test(newName)) throw new Error("Le nom [" + newName + "] contient des caractères non compatibles.");
 
                                 // Check if a file with the same name already exist
-                                if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(target.obj.path), newName))) return "Un ficher [" + newName + "] existe déjà.";
+                                if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(target.obj.path), newName))) throw new Error("Un ficher [" + newName + "] existe déjà.");
 
                                 // Change name
-                                fs.rename(path.join(ROOT_FOLDER, target.obj.path), path.join(ROOT_FOLDER, path.dirname(target.obj.path), newName), error => {
-                                    if (error) {
-                                        console.log(error);
-                                        return "Erreur lors du changement de nom du fichier :\r" + path.join(ROOT_FOLDER, target.obj.path);
-                                    }
-                                    else {
+                                await fsp.rename(path.join(ROOT_FOLDER, target.obj.path), path.join(ROOT_FOLDER, path.dirname(target.obj.path), newName))
+
+                                    .then(() => {
                                         target.obj.label = newName;
-                                        target.obj.path = path.join(ROOT_FOLDER, path.dirname(target.obj.path), newName);
+                                        target.obj.path = path.join(path.dirname(target.obj.path), newName);
                                         target.title = path.join(path.dirname(target.obj.path), newName);
 
                                         // Position the new renamed folder in the correct alphabetic order (if not search result display mode)
@@ -278,10 +279,9 @@ module.exports = class LearningSection extends Section {
                                         });
 
                                         if (saveIsRequired) Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
-                                    }
-                                });
+                                    })
 
-                                return true;
+                                    .catch(error => { throw new Error(error); });
                             });
                         }
                     },
@@ -504,25 +504,26 @@ module.exports = class LearningSection extends Section {
 
                                                         resultElem.scrollIntoView();
 
-                                                        RENAME(resultElem.querySelector(".label"), true, (oldName, newName) => {
+                                                        RENAME(resultElem.querySelector(".label"), true, async (oldName, newName) => {
+
+                                                            newName = ESCAPE_HTML(newName);
+
+                                                            if (new RegExp("\\?|<|>|\\*|:|/|\\\\|\"|\\|", "i").test(newName)) throw new Error("Le nom [" + newName + "] contient des caractères non compatibles.");
 
                                                             // Check if a file with the same name already exist
-                                                            if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) return "Un ficher [" + newName + "] existe déjà.";
+                                                            if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) throw new Error("Un ficher [" + newName + "] existe déjà.");
 
                                                             // Rename file
-                                                            fs.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName), error => {
-                                                                if (error) {
-                                                                    console.log(error);
-                                                                    return "Erreur lors du changement de nom du fichier :\r" + path.join(ROOT_FOLDER, resultElem.obj.path);
-                                                                }
-                                                                else {
+                                                            await fsp.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))
+
+                                                                .then(() => {
                                                                     resultElem.obj.label = newName;
                                                                     resultElem.title = path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName);
                                                                     resultElem.obj.path = path.join(path.dirname(resultElem.obj.path), newName);
 
                                                                     // Position the new renamed folder in the correct alphabetic order
                                                                     let isTheLast = true;
-                                                                    for (const comparedElem of this._rootElement.querySelectorAll(".result.file")) {
+                                                                    for (const comparedElem of this._rootElement.querySelectorAll(".result.dir")) {
                                                                         if (comparedElem.querySelector(".label").innerText.localeCompare(newName) > 0) {
                                                                             this.getChildElem(".resultsContainer").insertBefore(resultElem, comparedElem);
                                                                             isTheLast = false;
@@ -530,19 +531,25 @@ module.exports = class LearningSection extends Section {
                                                                         }
                                                                     }
 
-                                                                    if (isTheLast) this.getChildElem(".resultsContainer").appendChild(resultElem);
+                                                                    if (isTheLast) {
+                                                                        let firstFile = this.getChildElem(".result.file");
+                                                                        if (firstFile) this.getChildElem(".resultsContainer").insertBefore(resultElem, firstFile);
+                                                                        else this.getChildElem(".resultsContainer").appendChild(resultElem);
+                                                                    }
 
                                                                     resultElem.scrollIntoView();
-                                                                }
-                                                            });
+                                                                })
 
-                                                            return true;
+                                                                .catch(error => { throw new Error(error); });
                                                         });
                                                     }
 
                                                 }
                                             }
                                         });
+                                    }
+                                    else {
+                                        new Notification("Le lien Youtube collé n'est pas reconnue : [" + string + "]")
                                     }
                                 }
                                 // Other type of link
@@ -568,25 +575,26 @@ module.exports = class LearningSection extends Section {
 
                                                     resultElem.scrollIntoView();
 
-                                                    RENAME(resultElem.querySelector(".label"), true, (oldName, newName) => {
+                                                    RENAME(resultElem.querySelector(".label"), true, async (oldName, newName) => {
+
+                                                        newName = ESCAPE_HTML(newName);
+
+                                                        if (new RegExp("\\?|<|>|\\*|:|/|\\\\|\"|\\|", "i").test(newName)) throw new Error("Le nom [" + newName + "] contient des caractères non compatibles.");
 
                                                         // Check if a file with the same name already exist
-                                                        if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) return "Un ficher [" + newName + "] existe déjà.";
+                                                        if (fs.existsSync(path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))) throw new Error("Un ficher [" + newName + "] existe déjà.");
 
                                                         // Rename file
-                                                        fs.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName), error => {
-                                                            if (error) {
-                                                                console.log(error);
-                                                                return "Erreur lors du changement de nom du fichier :\r" + path.join(ROOT_FOLDER, resultElem.obj.path);
-                                                            }
-                                                            else {
+                                                        await fsp.rename(path.join(ROOT_FOLDER, resultElem.obj.path), path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName))
+
+                                                            .then(() => {
                                                                 resultElem.obj.label = newName;
                                                                 resultElem.title = path.join(ROOT_FOLDER, path.dirname(resultElem.obj.path), newName);
                                                                 resultElem.obj.path = path.join(path.dirname(resultElem.obj.path), newName);
 
                                                                 // Position the new renamed folder in the correct alphabetic order
                                                                 let isTheLast = true;
-                                                                for (const comparedElem of this._rootElement.querySelectorAll(".result.file")) {
+                                                                for (const comparedElem of this._rootElement.querySelectorAll(".result.dir")) {
                                                                     if (comparedElem.querySelector(".label").innerText.localeCompare(newName) > 0) {
                                                                         this.getChildElem(".resultsContainer").insertBefore(resultElem, comparedElem);
                                                                         isTheLast = false;
@@ -594,13 +602,16 @@ module.exports = class LearningSection extends Section {
                                                                     }
                                                                 }
 
-                                                                if (isTheLast) this.getChildElem(".resultsContainer").appendChild(resultElem);
+                                                                if (isTheLast) {
+                                                                    let firstFile = this.getChildElem(".result.file");
+                                                                    if (firstFile) this.getChildElem(".resultsContainer").insertBefore(resultElem, firstFile);
+                                                                    else this.getChildElem(".resultsContainer").appendChild(resultElem);
+                                                                }
 
                                                                 resultElem.scrollIntoView();
-                                                            }
-                                                        });
+                                                            })
 
-                                                        return true;
+                                                            .catch(error => { throw new Error(error); });
                                                     });
                                                 }
 
