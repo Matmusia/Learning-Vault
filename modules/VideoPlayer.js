@@ -4,7 +4,7 @@ const PostitSection = require('./PostitSection');
 module.exports = class VideoPlayer {
 
     // FIXME Issue when toggling play/pause of a youtube video in PIP mode
-    // TODO Store some kind of play history to display on Overview section
+    // TODO Store some kind of play history to display on Overview section !!!
 
     #root_element
     #current_result_element
@@ -20,6 +20,9 @@ module.exports = class VideoPlayer {
 
     #saving_timestamp_interval_id
     #stored_playing_time
+
+    #shortcuts_are_registred = false
+    #shortcut_media_play_pause
 
     constructor() {
         // Load css files
@@ -154,6 +157,13 @@ module.exports = class VideoPlayer {
             this.#youtubePlayer_element = this.#root_element.querySelector(".youtubeEmbededPlayer");
             this.#youtubePlayer_element.addEventListener("mousemove", onMove);
         }
+
+        // Create global shortcuts to register
+        this.#shortcut_media_play_pause = new nw.Shortcut({
+            key: "MediaPlayPause",
+            active: () => { this.togglePlayPause(); },
+            failed: (msg) => { alert(msg); }
+        });
     }
 
     #display_add_postit_floating_form() {
@@ -264,6 +274,12 @@ module.exports = class VideoPlayer {
             this.#html5Player_element.classList.remove("hidden");
             this.#currentVideoType = "html5";
         }
+
+        // Register golobal shortcuts
+        if (this.#shortcuts_are_registred === false) {
+            this.#shortcuts_are_registred = true;
+            nw.App.registerGlobalHotKey(this.#shortcut_media_play_pause);
+        }
     }
 
     close() {
@@ -291,6 +307,12 @@ module.exports = class VideoPlayer {
                 this.#youtubePlayer.stopVideo();
                 this.#youtubePlayer.clearVideo();
                 break;
+        }
+
+        // Unregister golobal shortcuts
+        if (this.#shortcuts_are_registred) {
+            this.#shortcuts_are_registred = false;
+            nw.App.unregisterGlobalHotKey(this.#shortcut_media_play_pause);
         }
     }
 
