@@ -470,6 +470,9 @@ module.exports = class LearningSection extends Section {
                                 if (string.match(/^(https?:\/\/)?(www\.)?(youtube.com|youtu.be)/i)) {
                                     let matchVideoId = string.match(/(?:youtu.be\/([^?]+)|v=([^&]+))/i);
 
+                                    // Maybe a short ?
+                                    if (matchVideoId === null || (matchVideoId[1] === undefined && matchVideoId[2] === undefined)) matchVideoId = string.match(/shorts\/([^&]+)/i);
+
                                     if (matchVideoId !== null && (matchVideoId[1] !== undefined || matchVideoId[2] !== undefined)) {
 
                                         let jsonData = { videoId: matchVideoId[1] || matchVideoId[2] };
