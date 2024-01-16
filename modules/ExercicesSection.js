@@ -417,8 +417,11 @@ module.exports = class ExercicesSection extends Section {
                     // Drop on group
                     else tagsGroupTarget.appendChild(droppedTag);
 
-                    if (droppedTag.datas.bgColor === undefined && tagsGroupTarget.dataset.bgColor) droppedTag.style.backgroundColor = droppedTag.datas.inheritedBgColor = tagsGroupTarget.dataset.bgColor;
-                    if (droppedTag.datas.txtColor === undefined && tagsGroupTarget.dataset.txtColor) droppedTag.style.color = droppedTag.datas.inheritedTxtColor = tagsGroupTarget.dataset.txtColor;
+                    droppedTag.datas.inheritedBgColor = tagsGroupTarget.dataset.bgColor;
+                    if (droppedTag.datas.bgColor === undefined) droppedTag.style.backgroundColor = droppedTag.datas.inheritedBgColor || '';
+
+                    droppedTag.datas.inheritedTxtColor = tagsGroupTarget.dataset.txtColor;
+                    if (droppedTag.datas.txtColor === undefined) droppedTag.style.color = droppedTag.datas.inheritedTxtColor || '';
 
                     Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
                 }

@@ -276,16 +276,39 @@ TagEditor.addEventListener("click", event => {
         var newBgColor = TagEditor.querySelector(".bgColor input:checked+span+input") && TagEditor.querySelector(".bgColor input+span+input").value,
             newTxtColor = TagEditor.querySelector(".txtColor input:checked+span+input") && TagEditor.querySelector(".txtColor input+span+input").value;
 
-        TagEditor.currentTagsContainer.querySelectorAll(".tag[data-id='" + TagEditor.targetTag.datas.id + "']").forEach(tagElem => {
-            tagElem.style.backgroundColor = newBgColor || TagEditor.targetTag.datas.inheritedBgColor || null;
-            tagElem.style.color = newTxtColor || TagEditor.targetTag.datas.inheritedTxtColor || null;
-        });
+        if (TagEditor.targetTag !== null) {
+            // TagEditor.currentTagsContainer.querySelectorAll(".tag[data-id='" + TagEditor.targetTag.datas.id + "']").forEach(tagElem => {
+            TagEditor.currentSection.querySelectorAll(".tag[data-id='" + TagEditor.targetTag.datas.id + "']").forEach(tagElem => {
+                tagElem.style.backgroundColor = newBgColor || TagEditor.targetTag.datas.inheritedBgColor || null;
+                tagElem.style.color = newTxtColor || TagEditor.targetTag.datas.inheritedTxtColor || null;
+            });
 
-        if (newBgColor === null) delete TagEditor.targetTag.datas.bgColor;
-        else TagEditor.targetTag.datas.bgColor = newBgColor;
+            if (newBgColor === null) delete TagEditor.targetTag.datas.bgColor;
+            else TagEditor.targetTag.datas.bgColor = newBgColor;
 
-        if (newTxtColor === null) delete TagEditor.targetTag.datas.txtColor;
-        else TagEditor.targetTag.datas.txtColor = newTxtColor;
+            if (newTxtColor === null) delete TagEditor.targetTag.datas.txtColor;
+            else TagEditor.targetTag.datas.txtColor = newTxtColor;
+        }
+        else if (TagEditor.targetGroup !== null) {
+
+            TagEditor.targetGroup.querySelectorAll('.tag').forEach(tagElem => {
+
+                TagEditor.currentSection.querySelectorAll(".tag[data-id='" + tagElem.datas.id + "']").forEach(tagElem => {
+
+                    tagElem.datas.inheritedBgColor = newBgColor;
+                    tagElem.datas.inheritedTxtColor = newTxtColor;
+
+                    tagElem.style.backgroundColor = tagElem.datas.bgColor || newBgColor || null;
+                    tagElem.style.color = tagElem.datas.txtColor || newTxtColor || null;
+                });
+            });
+
+            if (newBgColor === null) delete TagEditor.targetGroup.dataset.bgColor;
+            else TagEditor.targetGroup.dataset.bgColor = newBgColor;
+
+            if (newTxtColor === null) delete TagEditor.targetGroup.dataset.txtColor;
+            else TagEditor.targetGroup.dataset.txtColor = newTxtColor;
+        }
 
         TagEditor.classList.remove("displayed");
 

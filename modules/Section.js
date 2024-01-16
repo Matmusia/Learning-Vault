@@ -205,8 +205,10 @@ module.exports = class Section {
                         sep: true,
                         action: item => {
                             TagEditor.currentTagsFilePath = this.tagsFilePath;
+                            TagEditor.currentSection = this._rootElement;
                             TagEditor.currentTagsContainer = this._rootElement.querySelector(".DB_tags_container")
                             TagEditor.targetTag = tagElem;
+                            TagEditor.targetGroup = null;
 
                             if (tagElem.datas.bgColor) {
                                 TagEditor.querySelector(".bgColor input[type='checkbox']").checked = true;
@@ -256,6 +258,37 @@ module.exports = class Section {
 
                                 Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
                             });
+                        }
+                    },
+                    {
+                        label: "Edit group colors...",
+                        icon: "colors.svg",
+                        sep: true,
+                        action: item => {
+                            TagEditor.currentTagsFilePath = this.tagsFilePath;
+                            TagEditor.currentSection = this._rootElement;
+                            TagEditor.currentTagsContainer = this._rootElement.querySelector(".DB_tags_container");
+                            TagEditor.targetTag = null;
+                            TagEditor.targetGroup = tagTitle.nextSibling;
+
+                            if (TagEditor.targetGroup.dataset.bgColor) {
+                                TagEditor.querySelector(".bgColor input[type='checkbox']").checked = true;
+                                TagEditor.querySelector(".bgColor input[type='color']").value = TagEditor.targetGroup.dataset.bgColor;
+                            }
+                            else {
+                                TagEditor.querySelector(".bgColor input[type='checkbox']").checked = false;
+                                TagEditor.querySelector(".bgColor input[type='color']").value = "#000000";
+                            }
+                            if (TagEditor.targetGroup.dataset.txtColor) {
+                                TagEditor.querySelector(".txtColor input[type='checkbox']").checked = true;
+                                TagEditor.querySelector(".txtColor input[type='color']").value = TagEditor.targetGroup.dataset.txtColor;
+                            }
+                            else {
+                                TagEditor.querySelector(".txtColor input[type='checkbox']").checked = false;
+                                TagEditor.querySelector(".txtColor input[type='color']").value = "#000000";
+                            }
+
+                            TagEditor.classList.add("displayed");
                         }
                     },
                     {
