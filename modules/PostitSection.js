@@ -412,9 +412,35 @@ module.exports = class PostitSection extends Section {
 
         // #region MAXI CONTAINER ----
 
-        // Click on top bar
-        this.#maxiContainer.querySelector(".topbar").addEventListener("click", event => {
-            let button;
+
+        // Drop on section
+        this._rootElement.addEventListener("drop", event => {
+            event.preventDefault();
+
+            var dragType = event.dataTransfer.getData("dragType");
+
+            if (dragType === "tag") {
+                var targetTag,
+                    tagsGroupTarget,
+                    droppedTag = Tag.draggedTag.toElement();
+
+                // Drop on tags group
+                if (tagsGroupTarget = event.target.closest(".tagGroupContainer")) {
+
+                    // Drop on other tag
+                    if (targetTag = event.target.closest(".tag")) tagsGroupTarget.insertBefore(droppedTag, targetTag);
+                    // Drop on group
+                    else tagsGroupTarget.appendChild(droppedTag);
+
+                    droppedTag.datas.inheritedBgColor = tagsGroupTarget.dataset.bgColor;
+                    if (droppedTag.datas.bgColor === undefined) droppedTag.style.backgroundColor = droppedTag.datas.inheritedBgColor || '';
+
+                    droppedTag.datas.inheritedTxtColor = tagsGroupTarget.dataset.txtColor;
+                    if (droppedTag.datas.txtColor === undefined) droppedTag.style.color = droppedTag.datas.inheritedTxtColor || '';
+
+                    Tag.saveTagsDatas(this.tagsFilePath, this._rootElement.querySelectorAll('.DB_tags_container .tagGroupContainer'));
+                }
+            }
         });
 
         let onClickOutside = event => {
