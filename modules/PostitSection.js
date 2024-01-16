@@ -153,7 +153,6 @@ module.exports = class PostitSection extends Section {
 
     #display_width
 
-    #pending
     tag_search_in_progress = false
 
     #context_changed_since_last_update
