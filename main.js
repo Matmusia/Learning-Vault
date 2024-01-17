@@ -250,8 +250,8 @@ var notesSection = new NotesSection("Notes", "datas/tags.notes.json");
 document.body.appendChild(notesSection.toElement());
 
 // Default section
-// overviewSection.display();
-learningSection.display();
+overviewSection.display();
+// learningSection.display();
 // notesSection.display();
 
 postitSection.display(); // TMP
