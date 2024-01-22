@@ -866,17 +866,17 @@ module.exports = class LearningSection extends Section {
 
         if (filteredResultsPathList !== null) filteredResultsPathList.forEach(resultPath => {
             isDir = fs.existsSync(path.join(ROOT_FOLDER, resultPath)) && fs.lstatSync(path.join(ROOT_FOLDER, resultPath)).isDirectory();
+            baseName = path.basename(resultPath);
 
             if (!isDir) {
-                baseName = path.basename(resultPath);
 
-                parentLvDatas = LearningResult.getLvDatas(path.dirname(resultPath));
+                parentLvDatas = LearningResult.getLvDatas(path.join(ROOT_FOLDER, path.dirname(resultPath)));
 
                 lvDatasFromParent = (parentLvDatas && parentLvDatas.files && parentLvDatas.files[baseName]) ? parentLvDatas.files[baseName] : null;
             }
             else lvDatasFromParent = undefined;
 
-            this._rootElement.querySelector(".resultsContainer").appendChild(new LearningResult(path.basename(resultPath), isDir, resultPath, this, true, lvDatasFromParent).toElement());
+            this._rootElement.querySelector(".resultsContainer").appendChild(new LearningResult(baseName, isDir, resultPath, this, true, lvDatasFromParent).toElement());
         });
     }
 
